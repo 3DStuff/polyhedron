@@ -2,7 +2,6 @@
 
 #include "../glm_ext/glm_extensions.h"
 #include "../stl/stl_import.h"
-#include "../buffer.h"
 
 #include <utility>
 #include <vector>
