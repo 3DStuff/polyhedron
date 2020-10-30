@@ -2,6 +2,11 @@
 
 #include "../glm_ext/glm_extensions.h"
 
+#include <tuple>
+#include <algorithm>
+#include <limits>
+#include <cmath>
+#include <utility>
 #include <limits>
 #include <vector>
 #include <fstream>
@@ -10,6 +15,8 @@
 #include <cassert>
 #include <set>
 #include <map>
+#include <tuple>
+
 
 namespace mesh {
     template<class T>
@@ -26,18 +33,29 @@ namespace stl {
         uint16_t _attribute = 0;
 
         face() = default;
-        face(const glm::vec3 &p1, const glm::vec3 &p2, const glm::vec3 &p3, const glm::vec3 &n = glm::vec3(0)) {
+        face(glm::vec3 &p1, glm::vec3 &p2, glm::vec3 &p3, const glm::vec3 &n = glm::vec3(0)) {
+            _vert_1 = p1;
+            _vert_2 = p2;
+            _vert_3 = p3;
+
             if(glm::length(n) < std::numeric_limits<float>::epsilon()) {
-                const glm::vec3 u = p2 - p1;
-                const glm::vec3 v = p3 - p1;
+                const glm::vec3 u = _vert_2 - _vert_1;
+                const glm::vec3 v = _vert_3 - _vert_1;
                 _norm = glm::cross(u, v);
             }
             else {
                 _norm = n;
             }
-            _vert_1 = p1;
-            _vert_2 = p2;
-            _vert_3 = p3;
+        }
+
+        friend bool operator < (const stl::face &lhs, const stl::face &rhs) {
+            std::array<glm::vec3, 3> larr = { lhs._vert_1, lhs._vert_2, lhs._vert_3 };
+            std::sort(larr.begin(), larr.end());
+
+            std::array<glm::vec3, 3> rarr = { rhs._vert_1, rhs._vert_2, rhs._vert_3 };
+            std::sort(rarr.begin(), rarr.end());
+
+            return larr < rarr;
         }
     };
     #pragma pack(pop)

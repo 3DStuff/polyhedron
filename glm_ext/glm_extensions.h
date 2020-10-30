@@ -1,11 +1,13 @@
 #pragma once
 
-// we do not want to change glm 
+// we do not want to change glm
+#ifdef __clang__
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wdeprecated-volatile"
-
-    //#define GLM_FORCE_SSE2 
-    //#define GLM_FORCE_AVX
+#elif defined(__GNUC__)
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wvolatile"
+#endif
     #define GLM_FORCE_SWIZZLE 
     #define GLM_ENABLE_EXPERIMENTAL
 
@@ -18,13 +20,17 @@
     #include <glm/gtx/vector_angle.hpp>
     #include <glm/gtx/transform.hpp>
     #include <glm/gtx/component_wise.hpp>
-
+    #include <glm/gtc/type_ptr.hpp>
+#ifdef __clang__
 #pragma GCC diagnostic pop
+#endif
 
-template <typename vec_t>
-struct compare_glm {
-    bool operator() (const vec_t& lhs, const vec_t& rhs) const {
-        return glm::all(glm::lessThan(lhs, rhs));
+#include <tuple>
+
+namespace glm {
+    template <class base_t>
+    bool operator<(const glm::vec<3, base_t> &lhs, const glm::vec<3, base_t> &rhs) { 
+        return std::tie(lhs.x, lhs.y, lhs.z) < std::tie(rhs.x, rhs.y, rhs.z);
     }
 };
 
