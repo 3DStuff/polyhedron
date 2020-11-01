@@ -4,7 +4,7 @@ namespace mesh {
     template<typename base_t>
     void polyhedron<base_t>::scale(const base_t dim) {
         benchmark::timer tmp("scale()");
-        const stl::bbox bbox = bounding_box();
+        const bbox bbox = bounding_box();
         const glm::vec<3, base_t> cur_size = bbox._max - bbox._min;
         
         for(size_t i = 0; i < _vertices.size(); i++) {
@@ -15,7 +15,7 @@ namespace mesh {
     template<typename base_t>
     void polyhedron<base_t>::scale(const glm::vec<3, base_t> &dim) {
         benchmark::timer tmp("scale()");
-        const stl::bbox<base_t> bbox = bounding_box();
+        const bbox<base_t> bbox = bounding_box();
         const glm::vec<3, base_t> cur_size = bbox._max - bbox._min;
 
         for(size_t i = 0; i < _vertices.size(); i++) {
@@ -29,7 +29,7 @@ namespace mesh {
         static_assert(is_flt, "normalize(): type must be floating point");
     
         benchmark::timer tmp("normalize()");
-        const stl::bbox<base_t> bbox = bounding_box();
+        const bbox<base_t> bbox = bounding_box();
         const glm::vec<3, base_t> cur_size = bbox._max - bbox._min;
         const base_t comp_max = glm::compMax(cur_size);
                 
@@ -78,8 +78,8 @@ namespace mesh {
     }
 
     template<typename base_t>
-    stl::bbox<base_t> polyhedron<base_t>::bounding_box() const {
-        stl::bbox<base_t> bbox;
+    bbox<base_t> polyhedron<base_t>::bounding_box() const {
+        bbox<base_t> bbox;
         for(const auto &v : this->_vertices) {
             bbox.extend(v);
         }

@@ -1,31 +1,14 @@
 #include "stl_import.h"
-#include "../mesh/polyhedron.h"
-#include "../glm_ext/glm_extensions.h"
+#include "../../mesh/bbox.h"
+#include "../../mesh/polyhedron.h"
+#include "../../glm_ext/glm_extensions.h"
 
 #include <functional>
 #include <iostream>
 #include <fstream>
 
 namespace stl {
-    //! Estimates global factor to scale the whole model to 0 < x < 1
-    template<typename base_t>
-    base_t bbox<base_t>::scale() const {
-        base_t max(-FLT_MAX);
-        glm::vec3 dif = _max - _min;
-
-        for(int i = 0; i < 3; i++) {
-            max = dif[i] > max ? dif[i] : max;
-        }
-        return base_t(1) / max;
-    }
-
-    //! Estimates offset to scale the whole model to 0 <= x <= 1
-    template<typename base_t>
-    glm::vec<3, base_t> bbox<base_t>::offset() const {
-        return _min * base_t(-1);
-    }
-
-    std::vector<face> format::normalized(const bbox<float> &b, const std::vector<face> &faces, const glm::vec3 &transl) {
+    std::vector<face> format::normalized(const mesh::bbox<float> &b, const std::vector<face> &faces, const glm::vec3 &transl) {
         const float scale = b.scale();
         const glm::vec3 offs = b.offset();
 
@@ -40,7 +23,7 @@ namespace stl {
         return res;
     }
 
-    std::vector<face> format::remove_offset(const bbox<float> &b, const std::vector<face> &faces) {
+    std::vector<face> format::remove_offset(const mesh::bbox<float> &b, const std::vector<face> &faces) {
         const glm::vec3 offs = b.offset();
         const glm::vec3 dim = (b._max - b._min) / 2.f;
 
@@ -55,7 +38,7 @@ namespace stl {
         return res;
     }
 
-    bbox<float> format::estimate_bbox(const std::vector<face> &faces) {
+    mesh::bbox<float> format::estimate_bbox(const std::vector<face> &faces) {
         glm::vec3 min(FLT_MAX);
         glm::vec3 max(-FLT_MAX);
 
@@ -131,9 +114,9 @@ namespace stl {
             vertex_arr.push_back(f._vert_2);
             vertex_arr.push_back(f._vert_3);
 
-            uint32_t id_v1 = i*3+0;
-            uint32_t id_v2 = i*3+1;
-            uint32_t id_v3 = i*3+2;
+            const uint32_t id_v1 = i*3+0;
+            const uint32_t id_v2 = i*3+1;
+            const uint32_t id_v3 = i*3+2;
             
             mesh._indices.add(mesh::face(id_v1, id_v2, id_v3));
 

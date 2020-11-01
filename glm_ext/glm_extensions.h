@@ -29,6 +29,19 @@
 
 namespace glm {
     template <class base_t>
+    bool operator==(const glm::vec<3, base_t> &lhs, const glm::vec<3, base_t> &rhs) { 
+        return 
+            lhs.x - rhs.x <= std::numeric_limits<base_t>::epsilon() &&
+            lhs.y - rhs.y <= std::numeric_limits<base_t>::epsilon() &&
+            lhs.z - rhs.z <= std::numeric_limits<base_t>::epsilon();
+    }
+
+    template <class base_t>
+    bool operator!=(const glm::vec<3, base_t> &lhs, const glm::vec<3, base_t> &rhs) { 
+        return !(lhs == rhs);
+    }
+    
+    template <class base_t>
     bool operator<(const glm::vec<3, base_t> &lhs, const glm::vec<3, base_t> &rhs) { 
         return std::tie(lhs.x, lhs.y, lhs.z) < std::tie(rhs.x, rhs.y, rhs.z);
     }

@@ -1,7 +1,8 @@
 #pragma once
 
 #include "../glm_ext/glm_extensions.h"
-#include "../stl/stl_import.h"
+#include "../io/stl/stl_import.h"
+#include "bbox.h"
 
 #include <utility>
 #include <vector>
@@ -147,7 +148,7 @@ namespace mesh {
         //! (with vertex normals)
         void to_obj(const std::string &file) const;
         //! estimates the boundingbox (slow)
-        stl::bbox<base_t> bounding_box() const;
+        bbox<base_t> bounding_box() const;
         glm::vec<3, base_t> dim() const;
     }; 
 };
