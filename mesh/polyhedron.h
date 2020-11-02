@@ -110,7 +110,7 @@ namespace mesh {
     //! Each vertex is stored exactly once within a hash table
     //! The face indices are stored separately and evaluated for error detection
     template<typename base_t>
-    class polyhedron {        
+    class polyhedron {       
     public:
         using index_t = uint32_t;
         using vec_t = glm::vec<3, base_t>;
@@ -126,6 +126,9 @@ namespace mesh {
             _indices.clear();
             _edges.clear();
         }
+
+        //! returns the average face area
+        double avg_face_area() const;
 
         //! scales the mesh to dim and returns the new scale for each axis while keeping original ratio
         void scale(const base_t dim);

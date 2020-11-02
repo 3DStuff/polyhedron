@@ -100,4 +100,28 @@ namespace mesh {
         }
         return true;
     }
+
+    template<typename base_t>
+    double polyhedron<base_t>::avg_face_area() const {
+        auto area = [](const auto &v1, const auto &v2, const auto &v3) {
+            double le1 = glm::length(v2-v1);
+            double le2 = glm::length(v3-v1);
+            double le3 = glm::length(v3-v2);
+            double p = 0.5 * (le1 + le2 + le3);
+            return std::sqrt(p * (p - le1) * (p - le2) * (p - le3));
+        };
+
+        double res = 0;
+        const size_t num_triangles = this->_indices._buffer.size();
+        for(const auto &id : this->_indices._buffer) {
+            const glm::vec3 &v1 = glm::make_vec3(this->_vertices[id._ids[0]]);
+            const glm::vec3 &v2 = glm::make_vec3(this->_vertices[id._ids[1]]);
+            const glm::vec3 &v3 = glm::make_vec3(this->_vertices[id._ids[2]]);
+            double a = area(v1, v2, v3);
+            // NaN check
+            if(a == a) res += a / num_triangles;
+        }
+        //std::cout << "avg_face_area(): " << res << std::endl;
+        return res;
+    }
 };
