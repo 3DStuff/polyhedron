@@ -124,4 +124,41 @@ namespace mesh {
         //std::cout << "avg_face_area(): " << res << std::endl;
         return res;
     }
+
+    template<typename base_t>
+    void polyhedron<base_t>::compress() {
+        std::map<glm::vec3, uint32_t> unique_vertices;
+        for(const auto &v : this->_vertices) {
+            unique_vertices[v] = 0;
+        }
+
+        uint32_t id = 0;
+        for(const auto &p : unique_vertices) {
+            unique_vertices[p.first] = id++;
+        }
+
+        index_buffer<index_t> new_id_buf; 
+        for(auto &f : this->_indices._buffer) {
+            const uint32_t id1 = unique_vertices[this->_vertices[f[0]]];
+            const uint32_t id2 = unique_vertices[this->_vertices[f[1]]];
+            const uint32_t id3 = unique_vertices[this->_vertices[f[2]]];
+            new_id_buf.add(mesh::face(id1, id2, id3));
+        }
+
+        float before = (float)this->_vertices.size();
+        float after = (float)unique_vertices.size();
+
+        std::cout 
+            << "Compress result: before=" << before
+            << " after=" << after 
+            << "; " << (1.f - (after / before)) * 100.f << "%" << std::endl;
+
+        this->_indices.clear();
+        this->_indices = new_id_buf;
+
+        this->_vertices.clear();
+        for(const auto &p : unique_vertices) {
+            this->_vertices.push_back(p.first);
+        }
+    }
 };

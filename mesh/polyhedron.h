@@ -58,20 +58,17 @@ namespace mesh {
         }
         
         friend bool operator< (const face<index_t> &l, const face<index_t> &r) {
-            return l._ids < r._ids;
+            std::array<index_t, 3> larr = l._ids;
+            std::sort(larr.begin(), larr.end());
+            std::array<index_t, 3> rarr = r._ids;
+            std::sort(rarr.begin(), rarr.end());
+            return larr < rarr;
         }
         
         face() {
             _ids = { 0 };
         }
-        face(index_t v1, index_t v2, index_t v3) {
-            if(v1 > v2)
-                std::swap(v1, v2);
-            if(v2 > v3)
-                std::swap(v2, v3);
-            if(v1 > v2)
-                std::swap(v1, v2);
-            
+        face(index_t v1, index_t v2, index_t v3) {            
             _ids = { v1, v2, v3 };
         }
     };
@@ -79,7 +76,7 @@ namespace mesh {
     //! axis aligned index buffer for faster voxelization
     template<typename index_t>
     struct index_buffer {
-        std::vector<face<index_t>> _buffer;    // face indices
+        std::set<face<index_t>> _buffer;    // face indices
 
         void clear() {
             _buffer.clear();
@@ -102,7 +99,7 @@ namespace mesh {
         }
         
         void add(const face<index_t> &f) {
-            _buffer.push_back(f);
+            _buffer.insert(f);
         }
     };
     
@@ -116,6 +113,7 @@ namespace mesh {
         using vec_t = glm::vec<3, base_t>;
         using arr_t = std::vector<vec_t>;
         
+        std::string _name = "";
         arr_t _vertices; // floating point vertex representation
         index_buffer<index_t> _indices; // face indices
         std::map<edge, int> _edges; // edges with number of adjacent faces
@@ -126,6 +124,9 @@ namespace mesh {
             _indices.clear();
             _edges.clear();
         }
+
+        //! compress the mesh
+        void compress();
 
         //! returns the average face area
         double avg_face_area() const;

@@ -25,6 +25,7 @@
 #include <set>
 #include <map>
 #include <tuple>
+#include <sstream>
 
 
 namespace mesh {
@@ -76,21 +77,48 @@ namespace obj {
             return poly;
         }
 
-        static void save(const std::vector<mesh::polyhedron<float>> &polys, const std::string &filename) {
+        static void save(mesh::polyhedron<float> &poly, const std::string &filename) {
             std::ofstream f = std::ofstream(filename);
             f << "#VoxelMagick SIMPLIFIED OBJ EXPORT\n";
+            for(auto &v : poly._vertices) {
+                f << "v " << v.x << " " << v.y << " " << v.z << std::endl;
+            }
+
+            for(auto &face : poly._indices._buffer) {
+                const uint32_t id1 = face._ids[0]+1;
+                const uint32_t id2 = face._ids[1]+1;
+                const uint32_t id3 = face._ids[2]+1;
+                f << "f " << id1 << " " << id2 << " " << id3 << std::endl;
+            }
+            f.close();
+        }
+
+        static void save(const std::vector<mesh::polyhedron<float>> &polys, const std::string &filename) {
+            // first buffer into a string
+            std::stringstream ss;
+            ss << "#VoxelMagick SIMPLIFIED OBJ EXPORT\n";
+
+            size_t vid_offs = 0;
             for(auto &poly : polys) {
+                ss << "o " << poly._name << std::endl;
+
                 for(auto &v : poly._vertices) {
-                    f << "v " << v.x << " " << v.y << " " << v.z << std::endl;
+                    ss << "v " << v.x << " " << v.y << " " << v.z << std::endl;
                 }
 
                 for(auto &face : poly._indices._buffer) {
                     const uint32_t id1 = face._ids[0]+1;
                     const uint32_t id2 = face._ids[1]+1;
                     const uint32_t id3 = face._ids[2]+1;
-                    f << "f " << id1 << " " << id2 << " " << id3 << std::endl;
+                    ss << "f " << id1+vid_offs << " " << id2+vid_offs << " " << id3+vid_offs << std::endl;
                 }
+
+                vid_offs += poly._vertices.size();
             }
+
+            // write to file
+            std::ofstream f = std::ofstream(filename);
+            f << ss.str();
             f.close();
         }
     };
