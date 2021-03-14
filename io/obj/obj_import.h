@@ -30,7 +30,7 @@
 
 namespace mesh {
     template<class T>
-    struct polyhedron;
+    class polyhedron;
 }
 
 namespace obj {

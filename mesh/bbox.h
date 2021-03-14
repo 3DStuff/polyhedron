@@ -9,6 +9,15 @@ namespace mesh {
         glm::vec<3, base_t> _min = glm::vec3(FLT_MAX);
         glm::vec<3, base_t> _max = glm::vec3(-FLT_MAX);
 
+        // bbox valid or broken?
+        // fails if any axis zero or FLT_MAX
+        bool valid() const {
+            if(glm::any(glm::lessThanEqual(glm::abs(_max-_min), glm::vec3(FLT_EPSILON)))) return false;
+            if(glm::any(glm::equal(glm::abs(_min), glm::vec3(FLT_MAX)))) return false;
+            if(glm::any(glm::equal(glm::abs(_max), glm::vec3(FLT_MAX)))) return false;
+            return true;
+        }
+
         glm::vec<3, base_t> dim() const {
             return _max - _min;
         }

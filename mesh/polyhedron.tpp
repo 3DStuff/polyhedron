@@ -15,9 +15,6 @@ namespace mesh {
     template<typename base_t>
     void polyhedron<base_t>::scale(const glm::vec<3, base_t> &dim) {
         benchmark::timer tmp("scale()");
-        const bbox<base_t> bbox = bounding_box();
-        const glm::vec<3, base_t> cur_size = bbox._max - bbox._min;
-
         for(size_t i = 0; i < _vertices.size(); i++) {
             _vertices[i] *= dim;
         }

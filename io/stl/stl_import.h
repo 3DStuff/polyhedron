@@ -21,10 +21,10 @@
 
 namespace mesh {
     template<class T>
-    struct polyhedron;
+    class polyhedron;
 
     template<class T>
-    class bbox;
+    struct bbox;
 }
 
 namespace stl {
