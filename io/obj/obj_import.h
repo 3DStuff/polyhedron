@@ -1,11 +1,15 @@
 #pragma once
 
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wunused-value"
+#ifdef __GNUC__
+    #pragma GCC diagnostic push
+    #pragma GCC diagnostic ignored "-Wunused-value"
+#endif
 
 #include "../../tinyobjloader/tiny_obj_loader.h"
 
-#pragma GCC diagnostic pop
+#ifdef __GNUC__
+    #pragma GCC diagnostic pop
+#endif
 
 #include "../../mesh/polyhedron.h"
 #include "../../glm_ext/glm_extensions.h"
