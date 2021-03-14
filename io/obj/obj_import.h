@@ -47,6 +47,10 @@ namespace obj {
         format() = default;
         format(const std::string &file) {
             _loadSuccess = tinyobj::LoadObj(&_attrib, &_shapes, &_materials, &_warn, &_err, file.c_str());
+            if(!_err.empty())
+                std::cout << "obj::format() - " << file << ": " << _err;
+            if(!_warn.empty())
+                std::cout << "obj::format() - " << file << ": " << _warn;
         }
 
         //! merge all the crap together
