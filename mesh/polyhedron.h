@@ -81,21 +81,14 @@ namespace mesh {
         void clear() {
             _buffer.clear();
         }
-
-        operator const std::vector<face<index_t>> &() const {
-            return _buffer;
-        }
-        operator std::vector<face<index_t>> &() {
-            return _buffer;
+        size_t size() {
+            return _buffer.size();
         }
 
-        face<index_t> &operator [] (const size_t id) {
-            assert(id < _buffer.size());
-            return _buffer[id];
-        }
-        const face<index_t> &operator [] (const size_t id) const {
-            assert(id < _buffer.size());
-            return _buffer[id];
+        std::vector<face<index_t>> to_arr() const {
+            std::vector<face<index_t>> tmp;
+            std::copy(_buffer.begin(), _buffer.end(), std::back_inserter(tmp));
+            return tmp;
         }
         
         void add(const face<index_t> &f) {
